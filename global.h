@@ -37,8 +37,8 @@
 
 // switches
 #define ENCODER_SW		PB12
-#define ENCODER_A		PB13
-#define ENCODER_B		PB14
+#define ENCODER_B		PB13
+#define ENCODER_A		PB14
 #define BTN4 			PB15
 
 // TFT pins are hard coded in Adafruit_TFTLCD_8bit_STM32.h file
