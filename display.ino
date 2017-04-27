@@ -481,9 +481,11 @@ void drawLabels()	{
 			tft.print("AUTO");
 			break;
 		case TRIGGER_NORM:
+			tft.setTextColor(ILI9341_YELLOW, ILI9341_BLACK);
 			tft.print("NORM");
 			break;
 		case TRIGGER_SINGLE:
+			tft.setTextColor(ILI9341_RED, ILI9341_BLACK);
 			tft.print("SING");
 			break;
 	}
@@ -502,10 +504,10 @@ void drawLabels()	{
 		tft.fillTriangle(trigX + 2, 232, trigX + 4, 230, trigX + 6, 232, ILI9341_GREEN);
 	}
 	else	{
-		tft.drawFastHLine(trigX + 4, TFT_HEIGHT - 3, 5, ILI9341_GREEN);
-		tft.drawFastVLine(trigX + 4, TFT_HEIGHT -vOffset + 2, vOffset - 4, ILI9341_GREEN);
-		tft.drawFastHLine(trigX - 1, TFT_HEIGHT -vOffset + 2, 5, ILI9341_GREEN);
-		tft.fillTriangle(trigX + 2, 231, trigX + 4, 233, trigX + 6, 231, ILI9341_GREEN);
+		tft.drawFastHLine(trigX + 4, TFT_HEIGHT - 3, 5, ILI9341_RED);
+		tft.drawFastVLine(trigX + 4, TFT_HEIGHT -vOffset + 2, vOffset - 4, ILI9341_RED);
+		tft.drawFastHLine(trigX - 1, TFT_HEIGHT -vOffset + 2, 5, ILI9341_RED);
+		tft.fillTriangle(trigX + 2, 231, trigX + 4, 233, trigX + 6, 231, ILI9341_RED);
 	}	
 	
 	
