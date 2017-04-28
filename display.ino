@@ -350,12 +350,12 @@ inline void plotLineSegment(int16_t transposedPt1, int16_t transposedPt2,  int i
 
 
 // ------------------------
-void drawVCursor(int channel, uint16_t color, boolean highlight)	{
+void drawVCursor(int channel, uint16_t color, boolean highlight, uint16_t highlight_color)	{
 // ------------------------
 	int cPos = GRID_HEIGHT + vOffset + yCursors[channel];
     tft.fillTriangle(0, cPos - 5, hOffset, cPos, 0, cPos + 5, color);
 	if(highlight)
-		tft.drawRect(0, cPos - 7, hOffset, 14, ILI9341_WHITE);
+		tft.drawRect(0, cPos - 7, hOffset, 14, highlight_color);
 }
 
 
@@ -415,11 +415,14 @@ void drawLabels()	{
 	tft.drawFastVLine(lOffset + sampleSizePx, 3, vOffset - 6, ILI9341_GREEN);
 	tft.drawFastHLine(lOffset, vOffset/2, sampleSizePx, ILI9341_GREEN);
 
+	uint16_t select_color = ILI9341_WHITE;
+	if ( inSelection() ) select_color = ILI9341_YELLOW;
+
 	// where does xCursor lie in this range
 	float windowSize = GRID_WIDTH * sampleSizePx/NUM_SAMPLES;
 	float xCursorPx =  xCursor * sampleSizePx/NUM_SAMPLES + lOffset;
 	if(currentFocus == L_window)
-		tft.drawRect(xCursorPx, 4, windowSize, vOffset - 8, ILI9341_WHITE);
+		tft.drawRect(xCursorPx, 4, windowSize, vOffset - 8, select_color);
 	else
 		tft.fillRect(xCursorPx, 4, windowSize, vOffset - 8, ILI9341_GREEN);
 
@@ -454,7 +457,7 @@ void drawLabels()	{
 	}
 
 	if(currentFocus == L_waves)
-		tft.drawRect(247, 0, 72, vOffset, ILI9341_WHITE);
+		tft.drawRect(247, 0, 72, vOffset, select_color);
 
 	// erase left side of grid
 	tft.fillRect(0, 0, hOffset, TFT_HEIGHT, ILI9341_BLACK);
@@ -462,13 +465,13 @@ void drawLabels()	{
 	// draw new wave cursors
 	// -----------------
 	if(waves[3])
-		drawVCursor(3, DG_SIGNAL2, (currentFocus == L_vPos4));
+		drawVCursor(3, DG_SIGNAL2, (currentFocus == L_vPos4), select_color);
 	if(waves[2])
-		drawVCursor(2, DG_SIGNAL1, (currentFocus == L_vPos3));
+		drawVCursor(2, DG_SIGNAL1, (currentFocus == L_vPos3), select_color);
 	if(waves[1])
-		drawVCursor(1, AN_SIGNAL2, (currentFocus == L_vPos2));
+		drawVCursor(1, AN_SIGNAL2, (currentFocus == L_vPos2), select_color);
 	if(waves[0])
-		drawVCursor(0, AN_SIGNAL1, (currentFocus == L_vPos1));
+		drawVCursor(0, AN_SIGNAL1, (currentFocus == L_vPos1), select_color);
 
 	// erase bottom bar
 	tft.fillRect(hOffset, GRID_HEIGHT + vOffset, TFT_WIDTH, vOffset, ILI9341_BLACK);
@@ -486,7 +489,7 @@ void drawLabels()	{
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
 	tft.setCursor(145, GRID_HEIGHT + vOffset + 4);
 	if(currentFocus == L_timebase)
-		tft.drawRect(140, GRID_HEIGHT + vOffset, 45, vOffset, ILI9341_WHITE);
+		tft.drawRect(140, GRID_HEIGHT + vOffset, 45, vOffset, select_color);
 	tft.print(getTimebaseLabel());
 
 	// print trigger type
@@ -494,7 +497,7 @@ void drawLabels()	{
 	tft.setTextColor(ILI9341_GREEN, ILI9341_BLACK);
 	tft.setCursor(230, GRID_HEIGHT + vOffset + 4);
 	if(currentFocus == L_triggerType)
-		tft.drawRect(225, GRID_HEIGHT + vOffset, 35, vOffset, ILI9341_WHITE);
+		tft.drawRect(225, GRID_HEIGHT + vOffset, 35, vOffset, select_color);
 
 	switch(triggerType)	{
 		case TRIGGER_AUTO:
@@ -513,7 +516,7 @@ void drawLabels()	{
 	// draw trigger edge
 	// -----------------
 	if(currentFocus == L_triggerEdge)
-		tft.drawRect(266, GRID_HEIGHT + vOffset, 15, vOffset + 4, ILI9341_WHITE);
+		tft.drawRect(266, GRID_HEIGHT + vOffset, 15, vOffset + 4, select_color);
 
 	int trigX = 270;
 	
@@ -536,7 +539,7 @@ void drawLabels()	{
 	int cPos = GRID_HEIGHT + vOffset + yCursors[0] - getTriggerLevel()/3;
     tft.fillTriangle(TFT_WIDTH, cPos - 5, TFT_WIDTH - hOffset, cPos, TFT_WIDTH, cPos + 5, AN_SIGNAL1);
 	if(currentFocus == L_triggerLevel)
-		tft.drawRect(GRID_WIDTH + hOffset, cPos - 7, hOffset, 14, ILI9341_WHITE);
+		tft.drawRect(GRID_WIDTH + hOffset, cPos - 7, hOffset, 14, select_color);
 }
 
 

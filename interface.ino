@@ -50,7 +50,8 @@ void btn4ISR()	{
 	}
 }
 
-
+boolean in_selection = false;
+boolean inSelection() { return in_selection; };
 
 // ------------------------
 void readESwitchISR()	{
@@ -63,7 +64,8 @@ void readESwitchISR()	{
 	// select different parameters to change
 	//focusNextLabel();
 	DBG_PRINTLN("switch");
-	focusPrevLabel();
+	in_selection = ! in_selection;
+	DBG_PRINTLN(in_selection);
 
 	// request repainting of screen labels
 	repaintLabels();
@@ -167,6 +169,14 @@ void calculateTraceZero(int waveID)		{
 // ------------------------
 void encoderChanged(int steps)	{
 // ------------------------
+	DBG_PRINTLN(steps);
+
+	if ( in_selection ) {
+		steps < 0 ? focusNextLabel() : focusPrevLabel();
+		repaintLabels();
+		return;
+	}
+
 	// which label has current focus
 	switch(currentFocus)	{
 		case L_timebase:
@@ -200,7 +210,7 @@ void encoderChanged(int steps)	{
 			if(steps > 0) changeYCursor(3, yCursors[3] - YCURSOR_STEP); else changeYCursor(3, yCursors[3] + YCURSOR_STEP);
 			break;
 	}
-	
+
 	// manually update display if frozen
 	if(hold)
 		drawWaves();
