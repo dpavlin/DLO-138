@@ -61,8 +61,10 @@ void readESwitchISR()	{
 	lastBtnPress = millis();
 
 	// select different parameters to change
-	focusNextLabel();
-	
+	//focusNextLabel();
+	DBG_PRINTLN("switch");
+	focusPrevLabel();
+
 	// request repainting of screen labels
 	repaintLabels();
 	

@@ -64,6 +64,26 @@ void focusNextLabel()	{
 }
 
 
+// ------------------------
+void focusPrevLabel()	{
+// ------------------------
+	if ( currentFocus == L_timebase )
+		currentFocus = L_vPos4;
+	else
+		currentFocus--;
+
+	if((currentFocus == L_vPos4) && !waves[3])
+		currentFocus--;
+
+	if((currentFocus == L_vPos3) && !waves[2])
+		currentFocus--;
+
+	if((currentFocus == L_vPos2) && !waves[1])
+		currentFocus--;
+
+	if((currentFocus == L_vPos1) && !waves[0])
+		currentFocus--;
+}
 
 
 // ------------------------
