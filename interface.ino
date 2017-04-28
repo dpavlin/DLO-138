@@ -62,7 +62,6 @@ void readESwitchISR()	{
 	lastBtnPress = millis();
 
 	// select different parameters to change
-	//focusNextLabel();
 	DBG_PRINTLN("switch");
 	in_selection = ! in_selection;
 	DBG_PRINTLN(in_selection);
@@ -172,7 +171,7 @@ void encoderChanged(int steps)	{
 	DBG_PRINTLN(steps);
 
 	if ( in_selection ) {
-		steps < 0 ? focusNextLabel() : focusPrevLabel();
+		focusNextLabel( steps > 0 );
 		repaintLabels();
 		return;
 	}

@@ -30,6 +30,9 @@ uint8_t dHeight = GRID_HEIGHT/8;
 int16_t xCursor;
 // controls the vertical positioning of waveform
 int16_t yCursors[4];
+// indexes of waves sorted by position and back
+int16_t sorted_yCursors[4];
+int16_t sorted_back[4];
 // controls which waveforms are displayed
 boolean waves[4];
 // prints waveform statistics on screen
@@ -42,47 +45,88 @@ enum {L_timebase, L_triggerType, L_triggerEdge, L_triggerLevel, L_waves, L_windo
 uint8_t currentFocus = L_timebase;
 
 
-// ------------------------
-void focusNextLabel()	{
-// ------------------------
-	currentFocus++;
 
-	if((currentFocus == L_vPos1) && !waves[0])
-		currentFocus++;
+void sort_waves() {
+	int16_t a[4];
+	for(int i=0; i<4; i++) {
+		a[i] = yCursors[i];
+		sorted_yCursors[i] = i;
+	}
 
-	if((currentFocus == L_vPos2) && !waves[1])
-		currentFocus++;
+	for(int i=0; i<4; i++) {
+		for(int o=0; o<4; o++) {
+			if(a[o] > a[o+1]) {
+				int t = a[o];
+				a[o] = a[o+1];
+				a[o+1] = t;
+				int y = sorted_yCursors[o];
+				sorted_yCursors[o] = sorted_yCursors[o+1];
+				sorted_yCursors[o+1] = y;
+			}
+		}
+	}
 
-	if((currentFocus == L_vPos3) && !waves[2])
-		currentFocus++;
+	for(int i=0; i<4; i++) {
+		sorted_back[ sorted_yCursors[i] ] = i;
 
-	if((currentFocus == L_vPos4) && !waves[3])
-		currentFocus++;
-
-	if(currentFocus > L_vPos4)
-		currentFocus = L_timebase;
+		DBG_PRINT(sorted_yCursors[i]);
+		DBG_PRINT("=");
+		DBG_PRINT(yCursors[i]);
+		DBG_PRINT(" ");
+	}
+	DBG_PRINTLN();
 }
 
 
 // ------------------------
-void focusPrevLabel()	{
+void focusNextLabel(boolean forward)	{
 // ------------------------
-	if ( currentFocus == L_timebase )
-		currentFocus = L_vPos4;
-	else
-		currentFocus--;
 
-	if((currentFocus == L_vPos4) && !waves[3])
-		currentFocus--;
+	sort_waves();
 
-	if((currentFocus == L_vPos3) && !waves[2])
-		currentFocus--;
+	if ( ! forward && currentFocus == L_timebase )
+		currentFocus = L_vPos1 + sorted_yCursors[3]; // last wave
+	else if ( forward && currentFocus == L_window )
+		currentFocus = L_vPos1 + sorted_yCursors[0]; // first wave
+	else if( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) ) {
+		// allready inside range
+		int nr = currentFocus - L_vPos1;
+		DBG_PRINT("nr=");
+		DBG_PRINT(nr);
+		nr = sorted_back[ nr ];
+		DBG_PRINT(" sorted_back=");
+		DBG_PRINT(nr);
 
-	if((currentFocus == L_vPos2) && !waves[1])
-		currentFocus--;
+		int new_nr = -1;
 
-	if((currentFocus == L_vPos1) && !waves[0])
-		currentFocus--;
+		if ( nr == 0 && ! forward ) {
+			currentFocus = L_window; // back from last wave
+		} else if ( nr == 3 && forward ) {
+			currentFocus = L_timebase; // wrap to start
+		} else {
+			forward ? nr++ : nr--;
+			new_nr = sorted_yCursors[ nr ];
+			while ( nr > 0 && nr <= 3 && ! waves[new_nr] ) {
+				forward ? nr++ : nr--;
+				new_nr = sorted_yCursors[ nr ];
+			}
+			if ( ! waves[new_nr] ) {
+				if ( forward )
+					currentFocus = L_timebase; // wrap to start
+				else
+					currentFocus = L_window;
+			} else {
+				DBG_PRINT(" new_nr=");
+				DBG_PRINT(new_nr);
+				currentFocus = new_nr + L_vPos1;
+			}
+		}
+	} else {
+		forward ? currentFocus++ : currentFocus--;
+	}
+
+	DBG_PRINT(" currentFocus=");
+	DBG_PRINTLN(currentFocus);
 }
 
 
@@ -416,7 +460,7 @@ void drawLabels()	{
 	tft.drawFastHLine(lOffset, vOffset/2, sampleSizePx, ILI9341_GREEN);
 
 	uint16_t select_color = ILI9341_WHITE;
-	if ( inSelection() ) select_color = ILI9341_YELLOW;
+	if ( inSelection() ) select_color = ILI9341_CYAN;
 
 	// where does xCursor lie in this range
 	float windowSize = GRID_WIDTH * sampleSizePx/NUM_SAMPLES;
