@@ -69,9 +69,11 @@ void sort_waves() {
 	for(int i=0; i<4; i++) {
 		sorted_back[ sorted_yCursors[i] ] = i;
 
-		DBG_PRINT(sorted_yCursors[i]);
+		int nr = sorted_yCursors[i];
+		DBG_PRINT(nr);
 		DBG_PRINT("=");
 		DBG_PRINT(yCursors[i]);
+		DBG_PRINT(waves[nr] ? '+' : '-');
 		DBG_PRINT(" ");
 	}
 	DBG_PRINTLN();
@@ -82,18 +84,24 @@ void sort_waves() {
 void focusNextLabel(boolean forward)	{
 // ------------------------
 
+	DBG_PRINT( forward ? "forward " : "backward " );
 	sort_waves();
 
-	if ( ! forward && currentFocus == L_timebase )
-		currentFocus = L_vPos1 + sorted_yCursors[3]; // last wave
-	else if ( forward && currentFocus == L_window )
-		currentFocus = L_vPos1 + sorted_yCursors[0]; // first wave
-	else if( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) ) {
+	if(
+		( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) ) ||
+		( ! forward && currentFocus == L_timebase ) ||
+		(   forward && currentFocus == L_window )
+	) {
 		// allready inside range
 		int nr = currentFocus - L_vPos1;
 		DBG_PRINT("nr=");
 		DBG_PRINT(nr);
-		nr = sorted_back[ nr ];
+		if ( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) )
+			nr = sorted_back[ nr ];
+		else if ( ! forward && currentFocus == L_timebase )
+			nr = 3 + 1;
+		else if (   forward && currentFocus == L_window )
+			nr = 0 - 1;
 		DBG_PRINT(" sorted_back=");
 		DBG_PRINT(nr);
 
@@ -106,15 +114,21 @@ void focusNextLabel(boolean forward)	{
 		} else {
 			forward ? nr++ : nr--;
 			new_nr = sorted_yCursors[ nr ];
-			while ( nr > 0 && nr <= 3 && ! waves[new_nr] ) {
+			DBG_PRINT(" nr=");
+			DBG_PRINT(nr);
+			DBG_PRINT(" new_nr=");
+			DBG_PRINT(new_nr);
+			while ( nr >= 0 && nr <= 3 && ! waves[new_nr] ) {
 				forward ? nr++ : nr--;
 				new_nr = sorted_yCursors[ nr ];
+				DBG_PRINT(" nr=");
+				DBG_PRINT(nr);
+				DBG_PRINT(" new_nr=");
+				DBG_PRINT(new_nr);
 			}
-			if ( ! waves[new_nr] ) {
-				if ( forward )
-					currentFocus = L_timebase; // wrap to start
-				else
-					currentFocus = L_window;
+			if ( nr == -1 ) {
+				DBG_PRINT(" L_window");
+				currentFocus = L_window;
 			} else {
 				DBG_PRINT(" new_nr=");
 				DBG_PRINT(new_nr);
