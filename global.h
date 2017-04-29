@@ -1,5 +1,11 @@
 // comment out following line to use DSO push buttons instead of encoder
+// it doesn't implement keyboard repeat, so it's a pain to use
 #define USE_ENCODER
+
+// DSO138 board differences (uncomment correct one)
+#define ADC_SCALAR		3	// for older 13801K/13802K
+//#define ADC_SCALAR		1	// or for newer 13803K/13804K
+
 
 // serial print macros
 #define DBG_INIT(...) 		{ Serial.begin(__VA_ARGS__); 	}

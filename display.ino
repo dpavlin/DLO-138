@@ -823,7 +823,13 @@ void banner()	{
 
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
 	tft.setCursor(30, 120);
-	tft.print("DSO-138 hardware by JYE-Tech");
+	tft.print("DSO-138 hardware by JYE-Tech 1380");
+	tft.print(
+		ADC_SCALAR == 3 ? 1 : // or 2
+		ADC_SCALAR == 1 ? 3 : // or 4
+		'?' // uknown
+	);
+	tft.print("K");
 	
 	tft.setCursor(30, 145);
 	tft.print("Firmware version: ");

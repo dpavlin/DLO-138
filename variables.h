@@ -28,7 +28,7 @@ enum {CPL_GND, CPL_AC, CPL_DC};
 const char* cplNames[] = {"GND", "AC", "DC"}; 
 enum {RNG_5V, RNG_2V, RNG_1V, RNG_0_5V, RNG_0_2V, RNG_0_1V, RNG_50mV, RNG_20mV, RNG_10mV};
 const char* rngNames[] = {"5V", "2V", "1V", "0.5V", "0.2V", "0.1V", "50mV", "20mV", "10mV"}; 
-const float adcMultiplier[] = {0.05085*3, 0.02034*3, 0.01017*3, 0.005085*3, 0.002034*3, 0.001017*3, 0.5085*3, 0.2034*3, 0.1017*3}; 
+const float adcMultiplier[] = {0.05085*ADC_SCALAR, 0.02034*ADC_SCALAR, 0.01017*ADC_SCALAR, 0.005085*ADC_SCALAR, 0.002034*ADC_SCALAR, 0.001017*ADC_SCALAR, 0.5085*ADC_SCALAR, 0.2034*ADC_SCALAR, 0.1017*ADC_SCALAR}; 
 // analog switch enumerated values
 uint8_t couplingPos, rangePos;
 
