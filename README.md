@@ -1,5 +1,10 @@
 # DLO-138
 An open source firmware for DSO-138 Oscilloscope. 
+
+This is @dpavlin modifications to better support rotary encoder. Since original firmware doesn't have keyboard repeat, it allmost unusable on unmodified hardware, so I would suggest rotary encoder mod. It basically cycles around options in predictible manner and switches between moving around and chaning options by button press. I found it much quicker to use than original which moved to next option with each button press which required a lot of presses on encoder which is harder that rotating it.
+
+Also, depending on version of board you have, you will need to change ADC_SCALAR in globals.h which pepends on resistor value on your board.
+
 ![Photo](https://github.com/ardyesp/DLO-138/blob/master/pics/pic4.png)
 
 DSO-138 is an excellent piece of hardware based on ARM Cortex M3 core STM32F103 processor and sufficient for most beginner users. The stock firmware, while quite responsive, can use a few improvements. The main shortcoming which prompted the development of DLO-138 firmware is the inability to get waveform data into a computer for further analysis and the lack of a second channel. Engineers troubleshooting hardware issues need to mark reference points on waveform so having another analog or digital channel can greatly improve analysis. This firmware hopes to improve on these issues.
