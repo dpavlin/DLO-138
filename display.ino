@@ -106,11 +106,11 @@ void focusNextLabel(boolean forward)	{
 		DBG_PRINT(nr);
 
 		int new_nr = -1;
+		int orig_nr = nr;
+		DBG_PRINT(" orig_nr=");
 
 		if ( nr == 0 && ! forward ) {
 			currentFocus = L_window; // back from last wave
-		} else if ( nr == 3 && forward ) {
-			currentFocus = L_timebase; // wrap to start
 		} else {
 			forward ? nr++ : nr--;
 			new_nr = sorted_yCursors[ nr ];
@@ -129,6 +129,9 @@ void focusNextLabel(boolean forward)	{
 			if ( nr == -1 ) {
 				DBG_PRINT(" L_window");
 				currentFocus = L_window;
+			} else if ( orig_nr == new_nr && forward ) { // we didn't move
+				DBG_PRINT(" L_timebase");
+				currentFocus = L_timebase; // wrap to start
 			} else {
 				DBG_PRINT(" new_nr=");
 				DBG_PRINT(new_nr);
