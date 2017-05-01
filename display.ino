@@ -414,7 +414,7 @@ inline void plotLineSegment(int16_t transposedPt1, int16_t transposedPt2,  int i
 void drawVCursor(int channel, uint16_t color, boolean highlight, uint16_t highlight_color)	{
 // ------------------------
 	int cPos = GRID_HEIGHT + vOffset + yCursors[channel];
-    tft.fillTriangle(0, cPos - 5, hOffset, cPos, 0, cPos + 5, color);
+	tft.fillTriangle(0, cPos - 5, hOffset, cPos, 0, cPos + 5, color);
 	if(highlight)
 		tft.drawRect(0, cPos - 7, hOffset, 14, highlight_color);
 }
@@ -650,9 +650,9 @@ void drawStats()	{
 	// print new stats
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
 
-	if(clearStats)
-		tft.fillRect(60, 20, 50, 50, ILI9341_BLACK);
-	
+//	if(clearStats)
+//		tft.fillRect(60, 20, 50, 50, ILI9341_BLACK);
+
 	if(wStats.pulseValid)	{
 		tft.setCursor(60, 20);
 		tft.print((int) wStats.freq);
