@@ -67,14 +67,20 @@ void sort_waves() {
 	}
 
 	for(int i=0; i<4; i++) {
-		sorted_back[ sorted_yCursors[i] ] = i;
 
 		int nr = sorted_yCursors[i];
+		sorted_back[ nr ] = i;
+
 		DBG_PRINT(nr);
 		DBG_PRINT("=");
 		DBG_PRINT(yCursors[i]);
 		DBG_PRINT(waves[nr] ? '+' : '-');
 		DBG_PRINT(" ");
+	}
+	DBG_PRINT(" sorted_back:");
+	for(int i=0; i<4; i++) {
+		DBG_PRINT(" ");
+		DBG_PRINT(sorted_back[i]);
 	}
 	DBG_PRINTLN();
 }
@@ -94,7 +100,7 @@ void focusNextLabel(boolean forward)	{
 	) {
 		// allready inside range
 		int nr = currentFocus - L_vPos1;
-		DBG_PRINT("nr=");
+		DBG_PRINT("currentFocus nr=");
 		DBG_PRINT(nr);
 		if ( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) )
 			nr = sorted_back[ nr ];
@@ -102,12 +108,10 @@ void focusNextLabel(boolean forward)	{
 			nr = 3 + 1;
 		else if (   forward && currentFocus == L_window )
 			nr = 0 - 1;
-		DBG_PRINT(" sorted_back=");
+		DBG_PRINT(" sorted_back nr=");
 		DBG_PRINT(nr);
 
 		int new_nr = -1;
-		int orig_nr = nr;
-		DBG_PRINT(" orig_nr=");
 
 		if ( nr == 0 && ! forward ) {
 			currentFocus = L_window; // back from last wave
@@ -129,8 +133,8 @@ void focusNextLabel(boolean forward)	{
 			if ( nr == -1 ) {
 				DBG_PRINT(" L_window");
 				currentFocus = L_window;
-			} else if ( orig_nr == new_nr && forward ) { // we didn't move
-				DBG_PRINT(" L_timebase");
+			} else if ( nr == 4 && forward ) {
+				DBG_PRINT(" L_timebase last");
 				currentFocus = L_timebase; // wrap to start
 			} else {
 				DBG_PRINT(" new_nr=");
