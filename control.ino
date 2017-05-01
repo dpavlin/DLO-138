@@ -51,7 +51,46 @@ void controlLoop()	{
 		drawLabels();
 	}
 
+	processSerial();
+}
+
+void processSerial() {
 	// process any long pending operations which cannot be serviced in ISR
+	if ( Serial.available() ) {
+		int serial = Serial.read();
+		switch(serial) {
+			case 10:
+				break; // ignore enter
+			case '?':
+				Serial.println("# commandss: [d]umpSamples [hjkl] - encoder emulation");
+				break;
+
+			case 'd':
+				dumpSamples();
+				break;
+
+			// keyboard emulation of encoder for testing
+			case 'h':
+				hold = ! hold;
+				repaintLabels();
+				DBG_PRINT("hold ");
+				DBG_PRINTLN(hold);
+				break;
+			case 'j':
+				encoderChanged(1);
+				break;
+			case 'k':
+				encoderChanged(-1);
+				break;
+			case 'l':
+				readESwitchISR();
+				break;
+
+
+			default:
+				Serial.print(serial, HEX);
+		}
+	}
 }
 
 
@@ -78,5 +117,5 @@ void captureDisplayCycle(boolean wTimeOut)	{
 	}
 	
 	// freeze display if requested
-	while(hold);
+	while(hold) processSerial(); // buttons are in ISR, serial is not
 }
