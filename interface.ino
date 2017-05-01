@@ -113,9 +113,7 @@ void resetParam()	{
 			changeYCursor(3, -GRID_HEIGHT/2 - 1);
 			break;
 		default:
-			// toggle stats printing
-			printStats = !printStats;
-			saveParameter(PARAM_STATS, printStats);
+			changeStats();
 			break;
 	}
 	
@@ -426,4 +424,9 @@ void changeXCursor(int16_t xPos)	{
 }
 
 
-
+void changeStats() {
+	printStats = !printStats;
+	saveParameter(PARAM_STATS, printStats);
+	DBG_PRINT("printStats = ");
+	DBG_PRINTLN(printStats);
+}

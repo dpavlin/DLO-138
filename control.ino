@@ -19,15 +19,12 @@ void controlLoop()	{
 // ------------------------
 	// start by reading the state of analog system
 	readInpSwitches();
-
 	if(triggerType == TRIGGER_AUTO)	{
 		captureDisplayCycle(true);
 	}
-	
 	else if(triggerType == TRIGGER_NORM)	{
 		captureDisplayCycle(false);
 	}
-	
 	else	{
 		// single trigger
 		clearWaves();
@@ -62,9 +59,12 @@ void processSerial() {
 			case 10:
 				break; // ignore enter
 			case '?':
-				Serial.println("# commandss: [d]umpSamples [hjkl] - encoder emulation");
+				Serial.println("# commandss: [d]umpSamples, print[s]tats, [hjkl] - encoder emulation");
 				break;
 
+			case 's':
+				changeStats();
+				break;
 			case 'd':
 				dumpSamples();
 				break;
