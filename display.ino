@@ -420,7 +420,7 @@ void drawVCursor(int channel, uint16_t color, boolean highlight, uint16_t highli
 	int cPos = GRID_HEIGHT + vOffset + yCursors[channel];
 	tft.fillTriangle(0, cPos - 5, hOffset, cPos, 0, cPos + 5, color);
 	if(highlight)
-		tft.drawRect(0, cPos - 7, hOffset, 14, highlight_color);
+		selectBox(0, cPos - 7, hOffset, 14, 0b1011,highlight_color);
 }
 
 
@@ -444,15 +444,26 @@ void drawGrid()	{
 	for(int i = 1; i < 5*12; i++)
 		tft.drawFastVLine(i * hPacing/5 + hOffset, vOffset + GRID_HEIGHT/2 - 4, 7, GRID_COLOR);
 
-	tft.drawRect(hOffset, vOffset, GRID_WIDTH, GRID_HEIGHT, ILI9341_WHITE);
+	// moved to drawLabels because we want to write over it just once
+//	tft.drawRect(hOffset, vOffset, GRID_WIDTH, GRID_HEIGHT, ILI9341_WHITE);
 }
 
 
+void selectBox(int x, int y, int w, int h, int box, uint16_t color) {
 
+	tft.drawFastVLine( x,   y,   h, box & 0b1000 /* left  */ ? color : ILI9341_BLUE );
+	tft.drawFastVLine( x+w, y,   h, box & 0b0100 /* right */ ? color : ILI9341_BLUE );
+	tft.drawFastHLine( x,   y,   w, box & 0b0010 /* up    */ ? color : ILI9341_BLUE );
+	tft.drawFastHLine( x,   y+h, w, box & 0b0001 /* down  */ ? color : ILI9341_BLUE );
+
+}
 
 // ------------------------
 void drawLabels()	{
 // ------------------------
+	// draw white grid around graph which we will later partially overwrite
+	tft.drawRect(hOffset, vOffset, GRID_WIDTH, GRID_HEIGHT, ILI9341_WHITE);
+
 	// draw the static labels around the grid
 
 	// erase top bar
@@ -476,6 +487,7 @@ void drawLabels()	{
 	// -----------------
 	int sampleSizePx = 160;
 	float lOffset = (TFT_WIDTH - sampleSizePx)/2;
+
 	tft.drawFastVLine(lOffset, 3, vOffset - 6, ILI9341_GREEN);
 	tft.drawFastVLine(lOffset + sampleSizePx, 3, vOffset - 6, ILI9341_GREEN);
 	tft.drawFastHLine(lOffset, vOffset/2, sampleSizePx, ILI9341_GREEN);
@@ -486,10 +498,12 @@ void drawLabels()	{
 	// where does xCursor lie in this range
 	float windowSize = GRID_WIDTH * sampleSizePx/NUM_SAMPLES;
 	float xCursorPx =  xCursor * sampleSizePx/NUM_SAMPLES + lOffset;
-	if(currentFocus == L_window)
+	if(currentFocus == L_window) {
 		tft.drawRect(xCursorPx, 4, windowSize, vOffset - 8, select_color);
-	else
+		selectBox(lOffset - 4, 0, sampleSizePx + 8, vOffset, 0b1110, select_color);
+	} else {
 		tft.fillRect(xCursorPx, 4, windowSize, vOffset - 8, ILI9341_GREEN);
+	}
 
 	
 	// print active wave indicators
@@ -522,7 +536,8 @@ void drawLabels()	{
 	}
 
 	if(currentFocus == L_waves)
-		tft.drawRect(247, 0, 72, vOffset, select_color);
+		selectBox(247, 0, 72, vOffset, 0b1110, select_color);
+
 
 	// erase left side of grid
 	tft.fillRect(0, 0, hOffset, TFT_HEIGHT, ILI9341_BLACK);
@@ -539,7 +554,7 @@ void drawLabels()	{
 		drawVCursor(0, AN_SIGNAL1, (currentFocus == L_vPos1), select_color);
 
 	// erase bottom bar
-	tft.fillRect(hOffset, GRID_HEIGHT + vOffset, TFT_WIDTH, vOffset, ILI9341_BLACK);
+	tft.fillRect(hOffset, GRID_HEIGHT + vOffset + 1, TFT_WIDTH, vOffset - 1, ILI9341_BLACK);
 
 	// print input switch pos
 	// -----------------
@@ -554,7 +569,7 @@ void drawLabels()	{
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
 	tft.setCursor(145, GRID_HEIGHT + vOffset + 4);
 	if(currentFocus == L_timebase)
-		tft.drawRect(140, GRID_HEIGHT + vOffset, 45, vOffset, select_color);
+		selectBox(140, GRID_HEIGHT + vOffset - 1, 45, vOffset, 0b1101, select_color);
 	tft.print(getTimebaseLabel());
 
 	// print trigger type
@@ -562,7 +577,7 @@ void drawLabels()	{
 	tft.setTextColor(ILI9341_GREEN, ILI9341_BLACK);
 	tft.setCursor(230, GRID_HEIGHT + vOffset + 4);
 	if(currentFocus == L_triggerType)
-		tft.drawRect(225, GRID_HEIGHT + vOffset, 35, vOffset, select_color);
+		selectBox(225, GRID_HEIGHT + vOffset - 1, 35, vOffset, 0b1101, select_color);
 
 	switch(triggerType)	{
 		case TRIGGER_AUTO:
@@ -581,7 +596,7 @@ void drawLabels()	{
 	// draw trigger edge
 	// -----------------
 	if(currentFocus == L_triggerEdge)
-		tft.drawRect(266, GRID_HEIGHT + vOffset, 15, vOffset + 4, select_color);
+		selectBox(266, GRID_HEIGHT + vOffset - 1, 15, vOffset + 4, 0b1101, select_color);
 
 	int trigX = 270;
 	
@@ -605,7 +620,7 @@ void drawLabels()	{
 	int cPos = GRID_HEIGHT + vOffset + yCursors[0] - getTriggerLevel() / 2; // FIXME this works on 13801K
 	tft.fillTriangle(TFT_WIDTH, cPos - 5, TFT_WIDTH - hOffset, cPos, TFT_WIDTH, cPos + 5, AN_SIGNAL1);
 	if(currentFocus == L_triggerLevel)
-		tft.drawRect(GRID_WIDTH + hOffset, cPos - 7, hOffset, 14, select_color);
+		selectBox(GRID_WIDTH + hOffset - 1, cPos - 7, hOffset, 14, 0b0111, select_color);
 }
 
 
