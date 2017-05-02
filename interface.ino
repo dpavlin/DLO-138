@@ -208,6 +208,8 @@ void encoderChanged(int steps)	{
 			break;
 	}
 
+	clearPersistence();
+
 	// manually update display if frozen
 	if(hold)
 		drawWaves();
@@ -353,7 +355,7 @@ void incrementTimeBase()	{
 // ------------------------
 	if(currentTimeBase == T50MS)
 		return;
-	
+
 	setTimeBase(currentTimeBase + 1);
 }
 

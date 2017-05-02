@@ -168,7 +168,7 @@ void initDisplay()	{
 	tft.fillScreen(ILI9341_BLACK);
 	banner();
 
-	delay(4000);
+	//delay(4000);
 
 	// and paint o-scope
 	clearWaves();
@@ -203,8 +203,6 @@ void drawWaves()	{
 		paintLabels = false;
 	}
 }
-
-
 
 
 // ------------------------
@@ -249,7 +247,24 @@ void indicateCapturingDone()	{
 
 // local operations below
 
+boolean fade_color_clear = false;
 
+uint16_t fade_color(uint16_t color) { // 565
+	return fade_color_clear ? ILI9341_BLACK : color << 1;
+}
+
+void clearPersistence() {
+	fade_color_clear = true;
+	tft.fillRect(hOffset+1, vOffset+1, GRID_WIDTH-2, GRID_HEIGHT-2, ILI9341_BLACK); // clear graph area
+}
+
+boolean persistence_on = true;
+void togglePersistence() {
+	persistence_on = !persistence_on;
+	DBG_PRINT("togglePersistence ");
+	DBG_PRINTLN(persistence_on);
+	clearPersistence();
+}
 
 
 // 0, 1 Analog channels. 2, 3 digital channels
@@ -299,7 +314,7 @@ void clearNDrawSignals()	{
 			// clear the line segment
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsOld[3] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsOld[3] - val2;
-			plotLineSegment(transposedPt1, transposedPt2, i, ILI9341_BLACK);
+			plotLineSegment(transposedPt1, transposedPt2, i, fade_color(DG_SIGNAL2));
 		}
 
 		if(wavesOld[2])	{
@@ -308,7 +323,7 @@ void clearNDrawSignals()	{
 			// clear the line segment
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsOld[2] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsOld[2] - val2;
-			plotLineSegment(transposedPt1, transposedPt2, i, ILI9341_BLACK);
+			plotLineSegment(transposedPt1, transposedPt2, i, fade_color(DG_SIGNAL1));
 		}
 			
 		if(wavesOld[1])	{
@@ -317,7 +332,7 @@ void clearNDrawSignals()	{
 			// clear the line segment
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsOld[1] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsOld[1] - val2;
-			plotLineSegment(transposedPt1, transposedPt2, i, ILI9341_BLACK);
+			plotLineSegment(transposedPt1, transposedPt2, i, fade_color(AN_SIGNAL2));
 		}
 
 		if(wavesOld[0])	{
@@ -326,9 +341,9 @@ void clearNDrawSignals()	{
 			// clear the line segment
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsOld[0] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsOld[0] - val2;
-			plotLineSegment(transposedPt1, transposedPt2, i, ILI9341_BLACK);
+			plotLineSegment(transposedPt1, transposedPt2, i, fade_color(AN_SIGNAL1));
 		}
-			
+
 		// draw new segments
 		if(wavesSnap[3])	{
 			shiftedVal = bitStore[j] >> 7;
@@ -363,7 +378,7 @@ void clearNDrawSignals()	{
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsSnap[1] - val2;
 			plotLineSegment(transposedPt1, transposedPt2, i, AN_SIGNAL2);
 		}
-		
+
 		if(wavesSnap[0])	{
 			val1 = ((ch1Capture[j] - zeroVoltageA1Snap) * GRID_HEIGHT)/ADC_2_GRID;
 			val2 = ((ch1Capture[jn] - zeroVoltageA1Snap) * GRID_HEIGHT)/ADC_2_GRID;
@@ -382,12 +397,13 @@ void clearNDrawSignals()	{
 	wavesOld[1] = wavesSnap[1];
 	wavesOld[2] = wavesSnap[2];
 	wavesOld[3] = wavesSnap[3];
-	
+
 	yCursorsOld[0] = yCursorsSnap[0];
 	yCursorsOld[1] = yCursorsSnap[1];
 	yCursorsOld[2] = yCursorsSnap[2];
 	yCursorsOld[3] = yCursorsSnap[3];
 
+	if ( persistence_on && fade_color_clear ) fade_color_clear = false;
 }
 
 

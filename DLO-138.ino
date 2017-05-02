@@ -19,7 +19,7 @@ void setup()	{
 	
 	// load scope config or factory reset to defaults
 	loadConfig(digitalRead(BTN4) == LOW);
-	
+
 	// init the IL9341 display
 	initDisplay();
 }

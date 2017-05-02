@@ -59,7 +59,7 @@ void processSerial() {
 			case 10:
 				break; // ignore enter
 			case '?':
-				Serial.println("# commandss: [d]umpSamples, print[s]tats, [hjkl] - encoder emulation");
+				Serial.println("# commandss: [d]umpSamples, print[s]tats, [hjkl] - encoder emulation, [p]eersistence");
 				break;
 
 			case 's':
@@ -86,6 +86,10 @@ void processSerial() {
 				readESwitchISR();
 				break;
 
+			// config
+			case 'p':
+				togglePersistence();
+				break;
 
 			default:
 				Serial.print(serial, HEX);
