@@ -41,7 +41,7 @@ boolean printStats = true;
 boolean paintLabels = false;
 
 // labels around the grid
-enum {L_timebase, L_triggerType, L_triggerEdge, L_triggerLevel, L_waves, L_window, L_vPos1, L_vPos2, L_vPos3, L_vPos4};
+enum {L_timebase, L_triggerType, L_triggerEdge, L_triggerLevel, L_waves, L_window, L_status, L_vPos1, L_vPos2, L_vPos3, L_vPos4};
 uint8_t currentFocus = L_timebase;
 
 
@@ -96,7 +96,7 @@ void focusNextLabel(boolean forward)	{
 	if(
 		( (currentFocus >= L_vPos1) && (currentFocus <= L_vPos4 ) ) ||
 		( ! forward && currentFocus == L_timebase ) ||
-		(   forward && currentFocus == L_window )
+		(   forward && currentFocus == L_status )
 	) {
 		// allready inside range
 		int nr = currentFocus - L_vPos1;
@@ -106,7 +106,7 @@ void focusNextLabel(boolean forward)	{
 			nr = sorted_back[ nr ];
 		else if ( ! forward && currentFocus == L_timebase )
 			nr = 3 + 1;
-		else if (   forward && currentFocus == L_window )
+		else if (   forward && currentFocus == L_status )
 			nr = 0 - 1;
 		DBG_PRINT(" sorted_back nr=");
 		DBG_PRINT(nr);
@@ -114,7 +114,7 @@ void focusNextLabel(boolean forward)	{
 		int new_nr = -1;
 
 		if ( nr == 0 && ! forward ) {
-			currentFocus = L_window; // back from last wave
+			currentFocus = L_status; // back from last wave
 		} else {
 			forward ? nr++ : nr--;
 			new_nr = sorted_yCursors[ nr ];
@@ -131,8 +131,8 @@ void focusNextLabel(boolean forward)	{
 				DBG_PRINT(new_nr);
 			}
 			if ( nr == -1 ) {
-				DBG_PRINT(" L_window");
-				currentFocus = L_window;
+				DBG_PRINT(" L_status");
+				currentFocus = L_status;
 			} else if ( nr == 4 && forward ) {
 				DBG_PRINT(" L_timebase last");
 				currentFocus = L_timebase; // wrap to start
@@ -521,7 +521,6 @@ void drawLabels()	{
 		tft.fillRect(xCursorPx, 4, windowSize, vOffset - 8, ILI9341_GREEN);
 	}
 
-	
 	// print active wave indicators
 	// -----------------
 	tft.setCursor(250, 4);
@@ -557,6 +556,11 @@ void drawLabels()	{
 
 	// erase left side of grid
 	tft.fillRect(0, 0, hOffset, TFT_HEIGHT, ILI9341_BLACK);
+	
+	// RUN/HALT status
+	if(currentFocus == L_status) {
+		selectBox(1, 0, 50, vOffset, 0b1110, select_color);
+	}
 	
 	// draw new wave cursors
 	// -----------------

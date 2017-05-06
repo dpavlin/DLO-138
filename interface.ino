@@ -194,6 +194,9 @@ void encoderChanged(int steps)	{
 		case L_window:
 			if(steps > 0) changeXCursor(xCursor + XCURSOR_STEP); else changeXCursor(xCursor - XCURSOR_STEP);
 			break;
+		case L_status:
+			persistence_on = steps > 0 ? true : false;
+			break;
 		case L_vPos1:
 			if(steps > 0) changeYCursor(0, yCursors[0] - YCURSOR_STEP); else changeYCursor(0, yCursors[0] + YCURSOR_STEP);
 			break;
