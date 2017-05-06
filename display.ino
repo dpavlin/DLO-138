@@ -477,8 +477,11 @@ void selectBox(int x, int y, int w, int h, int box, uint16_t color) {
 // ------------------------
 void drawLabels()	{
 // ------------------------
+	uint16_t select_color = ILI9341_WHITE;
+	if ( inSelection() ) select_color = ILI9341_CYAN;
+
 	// draw white grid around graph which we will later partially overwrite
-	tft.drawRect(hOffset, vOffset, GRID_WIDTH, GRID_HEIGHT, ILI9341_WHITE);
+	tft.drawRect(hOffset, vOffset, GRID_WIDTH, GRID_HEIGHT, select_color);
 
 	// draw the static labels around the grid
 
@@ -507,9 +510,6 @@ void drawLabels()	{
 	tft.drawFastVLine(lOffset, 3, vOffset - 6, ILI9341_GREEN);
 	tft.drawFastVLine(lOffset + sampleSizePx, 3, vOffset - 6, ILI9341_GREEN);
 	tft.drawFastHLine(lOffset, vOffset/2, sampleSizePx, ILI9341_GREEN);
-
-	uint16_t select_color = ILI9341_WHITE;
-	if ( inSelection() ) select_color = ILI9341_CYAN;
 
 	// where does xCursor lie in this range
 	float windowSize = GRID_WIDTH * sampleSizePx/NUM_SAMPLES;
