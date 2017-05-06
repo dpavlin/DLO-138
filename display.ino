@@ -247,7 +247,7 @@ void indicateCapturingDone()	{
 
 // local operations below
 
-boolean fade_color_clear = false;
+boolean fade_color_clear = true;
 
 uint16_t fade_color(uint16_t color) { // 565
 	return fade_color_clear ? ILI9341_BLACK : color << 1;
@@ -258,7 +258,7 @@ void clearPersistence() {
 	tft.fillRect(hOffset+1, vOffset+1, GRID_WIDTH-2, GRID_HEIGHT-2, ILI9341_BLACK); // clear graph area
 }
 
-boolean persistence_on = true;
+boolean persistence_on = false;
 void togglePersistence() {
 	persistence_on = !persistence_on;
 	DBG_PRINT("togglePersistence ");
