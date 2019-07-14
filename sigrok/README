@@ -1,0 +1,20 @@
+Create dump file using microcom:
+
+microcom --logfile=ir-dump.4 -p /dev/ttyACM0
+
+Press d to generate dump.
+
+If you are not in auto mode, you might wait for trigger to generate data dump.
+
+After dump scrolled on screen, press ctrl+\ and type quit to exit microcom.
+
+Run conversion script on generated dump file:
+
+./dump2sr.pl ir-dump.4 
+
+This will create new.sr file (and new/ directory in which you can examine data)
+and you can open it using pulseview:
+
+pulseview new.sr
+
+You might want to delete CH2 if you don't have hardware modification since it's noise.
