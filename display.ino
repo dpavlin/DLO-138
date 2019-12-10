@@ -637,7 +637,7 @@ void drawLabels()	{
 	// draw trigger level on right side
 	// -----------------
 	//int cPos = GRID_HEIGHT + vOffset + yCursors[0] - getTriggerLevel()/3; // FIXME magic 3? 13803K maybe?
-	int cPos = GRID_HEIGHT + vOffset + yCursors[0] - getTriggerLevel() / 2; // FIXME this works on 13801K
+	int cPos = GRID_HEIGHT + vOffset + yCursors[0] - getTriggerLevel() / 2 - 50; // FIXME this works on 13801K
 	tft.fillTriangle(TFT_WIDTH, cPos - 5, TFT_WIDTH - hOffset, cPos, TFT_WIDTH, cPos + 5, AN_SIGNAL1);
 	if(currentFocus == L_triggerLevel)
 		selectBox(GRID_WIDTH + hOffset - 1, cPos - 7, hOffset, 14, 0b0111, select_color);
