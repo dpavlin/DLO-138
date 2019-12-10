@@ -1,0 +1,8 @@
+all:
+	test -d /tmp/arduino_cache_341717 || mkdir /tmp/arduino_cache_341717
+	test -d /tmp/arduino_build_954453 || mkdir /tmp/arduino_build_954453
+	/opt/arduino/arduino-builder -dump-prefs -logger=machine -hardware /opt/arduino/hardware -hardware /home/dpavlin/.arduino15/packages -hardware /home/dpavlin/Arduino/hardware -tools /opt/arduino/tools-builder -tools /opt/arduino/hardware/tools/avr -tools /home/dpavlin/.arduino15/packages -built-in-libraries /opt/arduino/libraries -libraries /home/dpavlin/Arduino/libraries -fqbn=Arduino_STM32:STM32F1:genericSTM32F103C:device_variant=STM32F103C8,upload_method=DFUUploadMethod,cpu_speed=speed_72mhz -vid-pid=0X1EAF_0X0004 -ide-version=10802 -build-path /tmp/arduino_build_954453 -warnings=none -build-cache /tmp/arduino_cache_341717 -prefs=build.warn_data_percentage=75 -verbose /nuc/stm32/DLO-138/DLO-138.ino
+	/opt/arduino/arduino-builder -compile -logger=machine -hardware /opt/arduino/hardware -hardware /home/dpavlin/.arduino15/packages -hardware /home/dpavlin/Arduino/hardware -tools /opt/arduino/tools-builder -tools /opt/arduino/hardware/tools/avr -tools /home/dpavlin/.arduino15/packages -built-in-libraries /opt/arduino/libraries -libraries /home/dpavlin/Arduino/libraries -fqbn=Arduino_STM32:STM32F1:genericSTM32F103C:device_variant=STM32F103C8,upload_method=DFUUploadMethod,cpu_speed=speed_72mhz -vid-pid=0X1EAF_0X0004 -ide-version=10802 -build-path /tmp/arduino_build_954453 -warnings=none -build-cache /tmp/arduino_cache_341717 -prefs=build.warn_data_percentage=75 -verbose /nuc/stm32/DLO-138/DLO-138.ino
+	/home/dpavlin/Arduino/hardware/Arduino_STM32/tools/linux/maple_upload ttyACM0 2 1EAF:0003 /tmp/arduino_build_954453/DLO-138.ino.bin 
+
+
